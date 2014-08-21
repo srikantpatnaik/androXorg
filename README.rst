@@ -14,5 +14,4 @@ Prerequisites
 Build Process
 -------------
 
-This documentation will use ``ubuntu-14.04.1 armhf`` image for filesystem. You
-may download it from `here`
+This documentation will use ``ubuntu-14.04.1 armhf`` image for filesystem. 
