@@ -21,20 +21,20 @@ start_mount()
 	{
         if [ ! -f "$chroot_path/proc/uptime" ]; then
                #mount --bind /proc $chroot_path/proc
-		busybox mount -t proc proc /proc $chroot_path/proc
+		busybox mount -t proc proc  $chroot_path/proc
         fi
 
         if [ ! -f "$chroot_path/dev/random" ]; then
                 #mount --bind /dev $chroot_path/dev
-	        busybox mount -t devtmpfs devtmpfs /dev $chroot_path/dev
+	        busybox mount -t devtmpfs devtmpfs $chroot_path/dev
                # mount --bind /dev/pts $chroot_path/dev/pts
-	        busybox mount -t devpts devpts /dev/pts $chroot_path/dev/pts
+	        busybox mount -t devpts devpts $chroot_path/dev/pts
 		ln -n /dev/graphics/fb0 /dev/fb0
         fi
 
         if [ ! -d "$chroot_path/sys/kernel" ]; then
                 #mount --bind /sys $chroot_path/sys
-                busybox mount -t sysfs sysfs /sys $chroot_path/sys
+                busybox mount -t sysfs sysfs $chroot_path/sys
         fi
 
  #       if [ ! -d "$chroot_path/dev/pts" ]; then
