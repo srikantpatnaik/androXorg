@@ -33,7 +33,8 @@ start_mount()
         fi
 
         if [ ! -d "$chroot_path/sys/kernel" ]; then
-                mount --bind /sys $chroot_path/sys
+                #mount --bind /sys $chroot_path/sys
+                busybox mount -t sysfs sysfs /sys $chroot_path/sys
         fi
 
  #       if [ ! -d "$chroot_path/dev/pts" ]; then
