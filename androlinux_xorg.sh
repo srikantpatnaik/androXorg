@@ -54,11 +54,16 @@ setup() {
         busybox chroot $chroot_path /bin/bash -c "chown messagebus.messagebus /var/run/dbus"
         busybox chroot $chroot_path /bin/bash -c "chmod 755 /var/run/dbus"
 	busybox chroot $chroot_path /bin/bash -c "chown -R student.student /home/student"
+	busybox chroot $chroot_path /bin/bash -c "rm /tmp/.X* > /dev/null 2>&1"
+	busybox chroot $chroot_path /bin/bash -c "rm /tmp/.X11-unix/X* > /dev/null 2>&1"
+	busybox chroot $chroot_path /bin/bash -c "rm /var/run/dbus/pid > /dev/null 2>&1"
+
 }
 
 
         start_mount
-        chroot $chroot_path /bin/bash "startx"
+	setup
+        chroot $chroot_path /bin/bash "su student -c 'startx'"
 
         stop_mount
         setprop ctl.start media & setprop ctl.start zygote & setprop ctl.start surfaceflinger & setprop ctl.start drm
