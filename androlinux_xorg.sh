@@ -41,6 +41,22 @@ stop_mount() {
         }
 
 
+setup() {
+	busybox sysctl -w net.ipv4.ip_forward=1
+	busybox chroot $chroot_path /bin/bash -c "echo '127.0.0.1 localhost' > /etc/hosts"
+	busybox chroot $chroot_path /bin/bash -c "echo 'shm /dev/shm tmpfs nodev,nosuid,noexec 0 0' >> /etc/fstab"
+	busybox chroot $chroot_path /bin/bash -c "chmod a+rw  /dev/null"
+        busybox chroot $chroot_path /bin/bash -c "chmod a+rw  /dev/ptmx"
+        busybox chroot $chroot_path /bin/bash -c "chmod 1777 $chroot_path/tmp"
+        busybox chroot $chroot_path /bin/bash -c "chmod 1777 $chroot_path/dev/shm"
+        busybox chroot $chroot_path /bin/bash -c "chmod +s $chroot_path/usr/bin/sudo"
+	busybox chroot $chroot_path /bin/bash -c "mkdir /var/run/dbus"
+        busybox chroot $chroot_path /bin/bash -c "chown messagebus.messagebus /var/run/dbus"
+        busybox chroot $chroot_path /bin/bash -c "chmod 755 /var/run/dbus"
+	busybox chroot $chroot_path /bin/bash -c "chown -R student.student /home/student"
+}
+
+
         start_mount
         chroot $chroot_path /bin/bash "startx"
 
