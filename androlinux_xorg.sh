@@ -63,7 +63,7 @@ setup() {
 
         start_mount
 	setup
-        chroot $chroot_path /bin/bash "su - student -c startx"
+        chroot $chroot_path /bin/su -l student -c 'startx'
 
         stop_mount
         setprop ctl.start media & setprop ctl.start zygote & setprop ctl.start surfaceflinger & setprop ctl.start drm
