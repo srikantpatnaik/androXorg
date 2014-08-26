@@ -47,9 +47,9 @@ setup() {
 	busybox chroot $chroot_path /bin/bash -c "echo 'shm /dev/shm tmpfs nodev,nosuid,noexec 0 0' >> /etc/fstab"
 	busybox chroot $chroot_path /bin/bash -c "chmod a+rw  /dev/null"
         busybox chroot $chroot_path /bin/bash -c "chmod a+rw  /dev/ptmx"
-        busybox chroot $chroot_path /bin/bash -c "chmod 1777 $chroot_path/tmp"
-        busybox chroot $chroot_path /bin/bash -c "chmod 1777 $chroot_path/dev/shm"
-        busybox chroot $chroot_path /bin/bash -c "chmod +s $chroot_path/usr/bin/sudo"
+        busybox chroot $chroot_path /bin/bash -c "chmod 1777 /tmp"
+        busybox chroot $chroot_path /bin/bash -c "chmod 1777 /dev/shm"
+        busybox chroot $chroot_path /bin/bash -c "chmod +s /usr/bin/sudo"
 	busybox chroot $chroot_path /bin/bash -c "mkdir /var/run/dbus"
         busybox chroot $chroot_path /bin/bash -c "chown messagebus.messagebus /var/run/dbus"
         busybox chroot $chroot_path /bin/bash -c "chmod 755 /var/run/dbus"
@@ -63,7 +63,7 @@ setup() {
 
         start_mount
 	setup
-        chroot $chroot_path /bin/bash "su student -c 'startx'"
+        chroot $chroot_path /bin/bash "su - student -c startx"
 
         stop_mount
         setprop ctl.start media & setprop ctl.start zygote & setprop ctl.start surfaceflinger & setprop ctl.start drm
