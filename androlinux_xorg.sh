@@ -3,7 +3,7 @@
 # This step will stop android UI
 setprop ctl.stop media & setprop ctl.stop zygote & setprop ctl.stop surfaceflinger & setprop ctl.stop drm
 
-export PATH=$bin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
+export PATH=$bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
 export TERM=linux
 
 chroot_path="/data/linux"
@@ -22,6 +22,7 @@ start_mount() {
         if [ ! -f "$chroot_path/dev/random" ]; then
 	        busybox mount /dev $chroot_path/dev
 	        busybox mount /dev/pts $chroot_path/dev/pts
+	        busybox mount /dev/cpuctl $chroot_path/dev/cpuctl
 		ln -n /dev/graphics/fb0 /dev/fb0
         fi
 
@@ -33,10 +34,11 @@ start_mount() {
 
 stop_mount() {
 	sleep 2
-        umount $chroot_path/proc
         umount $chroot_path/dev/pts
+        umount $chroot_path/dev/cpuctl
         umount $chroot_path/dev
         umount $chroot_path/sys
+        umount $chroot_path/proc
 	umount $chroot_path
         }
 
@@ -58,6 +60,7 @@ setup() {
 	busybox chroot $chroot_path /bin/bash -c "dpkg-divert --local --rename --add /sbin/initctl"
 	busybox chroot $chroot_path /bin/bash -c "ln -s /bin/true /sbin/initctl"
 	busybox chroot $chroot_path /bin/bash -c "service ssh start"
+	busybox chroot $chroot_path /bin/bash -c "dbus-daemon --system --fork > /dev/null 2>&1"
 
 
 	busybox chroot $chroot_path /bin/bash -c "chown -R student.student /home/student"
