@@ -3,8 +3,9 @@
 # This step will stop android UI
 setprop ctl.stop media & setprop ctl.stop zygote & setprop ctl.stop surfaceflinger & setprop ctl.stop drm
 
-export PATH=$bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
-export TERM=linux
+#export PATH=$bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
+#export PATH=/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
+#export TERM=linux
 
 chroot_path="/data/linux"
 export HOME=/root
@@ -45,6 +46,7 @@ stop_mount() {
 
 setup() {
 	busybox sysctl -w net.ipv4.ip_forward=1
+	busybox chroot $chroot_path /bin/bash -c "ln -s /run/shm /dev/shm"
 	busybox chroot $chroot_path /bin/bash -c "echo '127.0.0.1 localhost' > /etc/hosts"
 	busybox chroot $chroot_path /bin/bash -c "echo 'shm /dev/shm tmpfs nodev,nosuid,noexec 0 0' > /etc/fstab"
 	busybox chroot $chroot_path /bin/bash -c "chmod a+rw  /dev/null"
@@ -74,6 +76,8 @@ setup() {
 destroy() {
 
 	busybox chroot $chroot_path /bin/bash -c "service ssh stop"
+	busybox chroot $chroot_path /bin/bash -c "service wicd stop"
+	busybox chroot $chroot_path /bin/bash -c "service networking stop"
 }
 
 
