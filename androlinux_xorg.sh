@@ -8,9 +8,9 @@ setprop ctl.stop media & setprop ctl.stop zygote & setprop ctl.stop surfacefling
 #export TERM=linux
 
 chroot_path="/data/linux"
-export HOME=/root
-export HOSTNAME=netbook
-export DISPLAY=:0
+#export HOME=/root
+export HOSTNAME=localhost
+#export DISPLAY=:0
 
 # Change the path with your root file system (it can be any distro, doesn't matter)
 mount /storage/sdcard1/14.04.1_rootfs.img $chroot_path
@@ -78,6 +78,8 @@ destroy() {
 	busybox chroot $chroot_path /bin/bash -c "service ssh stop"
 	busybox chroot $chroot_path /bin/bash -c "service wicd stop"
 	busybox chroot $chroot_path /bin/bash -c "service networking stop"
+	bbox=busybox
+	for pid in `$bbox lsof | $bbox grep $mnt | $bbox sed -e's/  / /g' | $bbox cut -d' ' -f2`; do $bbox kill -9 $pid >/dev/null 2>&1; done
 }
 
 
