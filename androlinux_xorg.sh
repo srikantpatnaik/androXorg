@@ -70,6 +70,7 @@ setup() {
 	busybox chroot $chroot_path /bin/bash -c "rm -rf /tmp/*"
 	busybox chroot $chroot_path /bin/bash -c "rm /tmp/.X11-unix/X* > /dev/null 2>&1"
 	busybox chroot $chroot_path /bin/bash -c "rm /var/run/dbus/pid > /dev/null 2>&1"
+	busybox chroot $chroot_path /bin/bash -c "groupadd -g 3003 android_inet"
 
 }
 
@@ -78,8 +79,7 @@ destroy() {
 	busybox chroot $chroot_path /bin/bash -c "service ssh stop"
 	busybox chroot $chroot_path /bin/bash -c "service wicd stop"
 	busybox chroot $chroot_path /bin/bash -c "service networking stop"
-	bbox=busybox
-	for pid in `$bbox lsof | $bbox grep $mnt | $bbox sed -e's/  / /g' | $bbox cut -d' ' -f2`; do $bbox kill -9 $pid >/dev/null 2>&1; done
+	for pid in `busybox lsof | busybox grep $mnt | busybox sed -e's/  / /g' | busybox cut -d' ' -f2`; do busybox kill -9 $pid >/dev/null 2>&1; done
 }
 
 
