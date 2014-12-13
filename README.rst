@@ -1,6 +1,8 @@
 HOW TO
 ======
 
+A premitive `demo video. <https://www.youtube.com/watch?v=NhI7rfbqKb4>`_
+
 This repository contains a step by step tutorial to bring ``Xorg`` and other
 GNU/Linux components using chroot-linux.
 

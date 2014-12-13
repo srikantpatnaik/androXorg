@@ -7,6 +7,8 @@ setprop ctl.stop media & setprop ctl.stop zygote & setprop ctl.stop surfacefling
 #export PATH=/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
 #export TERM=linux
 
+mkdir -p /data/linux
+
 chroot_path="/data/linux"
 #export HOME=/root
 export HOSTNAME=localhost
