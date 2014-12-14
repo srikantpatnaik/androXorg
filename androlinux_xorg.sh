@@ -4,18 +4,18 @@
 setprop ctl.stop media & setprop ctl.stop zygote & setprop ctl.stop surfaceflinger & setprop ctl.stop drm
 
 #export PATH=$bin:/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
-#export PATH=/sbin:/usr/bin:/usr/local/bin:/usr/sbin:/bin:/usr/local/sbin:/usr/games:$PATH
+#export PATH=/usr/bin:/usr/sbin:/bin:/sbin:/system/sbin:/system/bin:/system/xbin:/system/xbin/bb:/data/local/bin:$PATH
 #export TERM=linux
 
 mkdir -p /data/linux
-
 chroot_path="/data/linux"
 #export HOME=/root
 export HOSTNAME=localhost
 #export DISPLAY=:0
 
 # Change the path with your root file system (it can be any distro, doesn't matter)
-mount /storage/sdcard1/14.04.1_rootfs.img $chroot_path
+#mount /storage/sdcard1/14.04.1_rootfs.img $chroot_path
+mount /data/14.04.1_rootfs.img $chroot_path
 
 start_mount() {
 	if [ ! -f "$chroot_path/proc/uptime" ]; then
@@ -32,6 +32,15 @@ start_mount() {
         if [ ! -d "$chroot_path/sys/kernel" ]; then
                 busybox mount /sys $chroot_path/sys
         fi
+ # Strictly for testing, must remove in production
+        if [ ! -d "$chroot_path/mnt/android/system/etc" ]; then
+        	busybox mount -o rw,remount /system
+                busybox mount /system $chroot_path/mnt/android/system
+        	busybox mount -o rw,remount /data
+                busybox mount /data $chroot_path/mnt/android/data
+        	busybox mount -o rw,remount /
+                busybox mount / $chroot_path/mnt/android/root
+        fi
 	}
 
 
@@ -42,7 +51,12 @@ stop_mount() {
         umount $chroot_path/dev
         umount $chroot_path/sys
         umount $chroot_path/proc
+        umount $chroot_path/mnt/android/system
+        umount $chroot_path/mnt/android/root
+        umount $chroot_path/mnt/android/data
 	umount $chroot_path
+       	busybox mount -o ro,remount /system
+        busybox mount -o ro,remount /
         }
 
 
@@ -73,6 +87,7 @@ setup() {
 	busybox chroot $chroot_path /bin/bash -c "rm /tmp/.X11-unix/X* > /dev/null 2>&1"
 	busybox chroot $chroot_path /bin/bash -c "rm /var/run/dbus/pid > /dev/null 2>&1"
 	busybox chroot $chroot_path /bin/bash -c "groupadd -g 3003 android_inet"
+	
 
 }
 
@@ -81,16 +96,17 @@ destroy() {
 	busybox chroot $chroot_path /bin/bash -c "service ssh stop"
 	busybox chroot $chroot_path /bin/bash -c "service wicd stop"
 	busybox chroot $chroot_path /bin/bash -c "service networking stop"
-	for pid in `busybox lsof | busybox grep $mnt | busybox sed -e's/  / /g' | busybox cut -d' ' -f2`; do busybox kill -9 $pid >/dev/null 2>&1; done
+	for pid in `lsof | busybox grep $chroot_path | busybox sed -e's/  / /g' | busybox cut -d' ' -f2`; do busybox kill -9 $pid >/dev/null 2>&1; done
 }
 
-
+ #       stop_mount # Just in case if something still mounted
         start_mount
 	setup
         chroot $chroot_path /bin/su -l student -c 'startx'
-
+	
+	sleep 2
 	destroy
-        stop_mount
+ 	stop_mount
         setprop ctl.start media & setprop ctl.start zygote & setprop ctl.start surfaceflinger & setprop ctl.start drm
 
 
